@@ -14,7 +14,7 @@ import javax.swing.event.ChangeListener;
  *
  * @author Boris
  */
-public class Lign {
+public class Line {
 
     private ArrayList<ChangeListener> listerList;
     private String name;
@@ -32,11 +32,11 @@ public class Lign {
         this.vector = vector;
     }
 
-    public Lign() {
+    public Line() {
         this(new String("Default Name"), 0, 0, 0);
     }
 
-    public Lign(String name, int v, int vmin, int vmax) {
+    public Line(String name, int v, int vmin, int vmax) {
         this.name = name;
         this.value = v;
         this.min = vmin;
