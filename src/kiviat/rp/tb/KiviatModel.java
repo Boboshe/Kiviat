@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class KiviatModel extends DefaultTableModel{
     
-//    private ArrayList<>
+//    private ArrayList<> 
     
     
 }
