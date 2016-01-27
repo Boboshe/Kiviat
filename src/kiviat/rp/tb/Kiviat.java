@@ -5,29 +5,57 @@
  */
 package kiviat.rp.tb;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
 
 /**
  *
  * @author Boris
  */
-public class Kiviat extends javax.swing.JPanel {
+public class Kiviat extends javax.swing.JLayeredPane {
+    
+    private int size = 400;
+    
     /**
      * Creates new form Kiviat
      */
     
-    
+    private ArrayList<ItemKiviat> listItem = new ArrayList<ItemKiviat>();
     
     public Kiviat() {
         initComponents();
+        this.setBorder(BorderFactory.createLineBorder(Color.black));
+        addLine(0,8,0,20);
+        addLine(-100,8,0,20);
+        addLine(45,5,0,20);
+        addLine(90,5,0,20);
+        addLine(0,5,0,20);
+        for(ItemKiviat item : listItem){
+            this.add(item);
+        }
+      
+        
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(200, 200);
+        return new Dimension(size, size);
     }
 
+    public void addLine(double angle, double value, double min, double max){
+        ItemKiviat item = new ItemKiviat(angle, value, min, max);
+        listItem.add(item);
+    }
     
+    @Override
+    public void setBounds (int x, int y, int w, int h){
+        super.setBounds(x, y, w, h);
+        for(ItemKiviat item : listItem){
+            item.setBounds(0, 0, w, h);
+        }
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,11 +70,11 @@ public class Kiviat extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 772, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 484, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
