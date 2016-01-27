@@ -24,7 +24,7 @@ public class ItemKiviat extends JComponent {
     private double angle;
 
     private Ellipse2D cursor;
-    private Point2D centre = new Point2D.Double(0.0, 0.0);
+    private Point2D centre = new Point2D.Double(50.0, 50.0);
     private double cursorSize = 5;
 
     private double value;
@@ -37,6 +37,7 @@ public class ItemKiviat extends JComponent {
         this.value = value;
         this.min = min;
         this.max = max;
+        repaint();
     }
 
     @Override
@@ -46,6 +47,7 @@ public class ItemKiviat extends JComponent {
         Point2D.Double cursorCoord = valuetoCoordCursor();
         cursor = new Ellipse2D.Double(cursorCoord.x, cursorCoord.y, cursorSize, cursorSize);
         g.draw(line);
+        g.draw(cursor);
     }
 
     public ItemKiviat() {
