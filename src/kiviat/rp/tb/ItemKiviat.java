@@ -10,6 +10,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -19,7 +22,7 @@ import javax.swing.JComponent;
  *
  * @author Boris
  */
-public class ItemKiviat extends JComponent {
+public class ItemKiviat extends JComponent implements MouseListener, MouseMotionListener{
 
     private Line2D line;
     private double lineLength = 150;
@@ -30,16 +33,21 @@ public class ItemKiviat extends JComponent {
     private double centreY = size/2;
 
     private Ellipse2D cursor;
-    private double cursorSize = 5;
+    private double cursorSize = 10;
 
     private double value;
 
     
     private double min;
     private double max;
+    private String name;
 
-    public ItemKiviat(double angle, double value, double min, double max) {
+    public ItemKiviat(String name, double angle, double value, double min, double max) {
         super();
+        cursor = new Ellipse2D.Double();
+        this.addMouseListener(this);
+        this.addMouseMotionListener(this);
+        this.name = name;
         this.angle = angle;
         this.value = value;
         this.min = min;
@@ -56,7 +64,7 @@ public class ItemKiviat extends JComponent {
         g.setStroke(new BasicStroke(2));
         line = new Line2D.Float(debutLine(), finLine());
         Point2D.Double cursorCoord = valuetoCoordCursor();
-        cursor = new Ellipse2D.Double(cursorCoord.x, cursorCoord.y, cursorSize, cursorSize);
+        cursor.setFrame(cursorCoord.x, cursorCoord.y, cursorSize, cursorSize);
         g.draw(line);
         g.setColor(Color.red);
         g.draw(cursor);
@@ -86,8 +94,14 @@ public class ItemKiviat extends JComponent {
         y += centreY;
         return new Point2D.Double(x,y);
     }
-
-   
+    
+    @Override
+    public boolean contains(int x, int y){
+        return cursor.contains((double)x,(double)y);
+    }
+    
+    
+    
     
    
 
@@ -102,6 +116,56 @@ public class ItemKiviat extends JComponent {
         double y = -Math.sin(Math.toRadians(angle)) * (rayon+decalage);
         x += centreX;
         y += centreY;
+        
+        //On centre le curseur sur la ligne
+        x -= cursorSize/2;
+        y -= cursorSize/2;
         return new Point2D.Double(x,y);
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        System.out.println("Clique : X : " + x + " ; " + " Y : " + y);
+        
+        if(this.contains(x, y)){
+            System.out.println("Item : " + name);
+        }
+        
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        System.out.println("Drag");
+        cursor.setFrame(e.getX(), e.getY(), cursorSize, cursorSize);
+        repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+ 
+    }
+
+    
 }

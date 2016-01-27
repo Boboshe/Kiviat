@@ -7,6 +7,8 @@ package kiviat.rp.tb;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.event.TableModelEvent;
@@ -45,10 +47,11 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         nbAxes = this.model.getRowCount();
         double angle = 360.0 / (double) nbAxes;
         for (int i = 0; i < nbAxes; i++) {
+            String name = (String) this.model.getValueAt(i, 0);
             Integer value = (Integer) (this.model.getValueAt(i, 1));//(int)
             Integer min = (Integer) this.model.getValueAt(i, 2);
             Integer max = (Integer) this.model.getValueAt(i, 3);
-            addLine(0.0 + (angle * i), value.doubleValue(), min.doubleValue(), max.doubleValue());
+            addLine(name, 0.0 + (angle * i), value.doubleValue(), min.doubleValue(), max.doubleValue());
         }
         for (ItemKiviat item : listItem) {
             this.add(item);
@@ -60,8 +63,8 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         return new Dimension(size, size);
     }
 
-    public void addLine(double angle, double value, double min, double max) {
-        ItemKiviat item = new ItemKiviat(angle, value, min, max);
+    public void addLine(String name, double angle, double value, double min, double max) {
+        ItemKiviat item = new ItemKiviat(name ,angle, value, min, max);
         listItem.add(item);
     }
 
@@ -114,4 +117,6 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
 
         repaint();
     }
+
+    
 }
