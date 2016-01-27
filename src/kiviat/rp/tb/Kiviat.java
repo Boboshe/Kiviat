@@ -8,6 +8,7 @@ package kiviat.rp.tb;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.event.TableModelEvent;
@@ -71,6 +72,8 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
     public Dimension getPreferredSize() {
         return new Dimension(size, size);
     }
+    
+    
 
     //[A FAIRE] Il faut qu'on puisse ajouter le nom!
     public void addLine(String name, double angle, double value, double min, double max) {
