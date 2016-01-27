@@ -28,10 +28,19 @@
               <Component id="kiviat1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-
+<<<<<<< HEAD
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="196" max="-2" attributes="0"/>
+                      <Component id="jScrollPane1" min="-2" pref="375" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="306" max="-2" attributes="0"/>
+                      <Component id="kiviat1" min="-2" pref="100" max="-2" attributes="0"/>
+                  </Group>
+=======
                   <Component id="jScrollPane1" min="-2" pref="460" max="-2" attributes="0"/>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-
+>>>>>>> ce6e38df51f1b71c58a995934ae4383122fd0bd1
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -39,7 +48,13 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-
+<<<<<<< HEAD
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
+              <Component id="kiviat1" min="-2" pref="100" max="-2" attributes="0"/>
+              <EmptySpace pref="111" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="275" max="-2" attributes="0"/>
+=======
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -51,7 +66,7 @@
                   <Component id="kiviat1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="29" max="32767" attributes="0"/>
-
+>>>>>>> ce6e38df51f1b71c58a995934ae4383122fd0bd1
           </Group>
       </Group>
     </DimensionLayout>
@@ -80,7 +95,9 @@
     </Container>
     <Container class="kiviat.rp.tb.Kiviat" name="kiviat1">
 
-
+<<<<<<< HEAD
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+=======
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
@@ -93,7 +110,7 @@
           </Group>
         </DimensionLayout>
       </Layout>
-
+>>>>>>> ce6e38df51f1b71c58a995934ae4383122fd0bd1
     </Container>
     <Container class="javax.swing.JPanel" name="jPanel1">
 

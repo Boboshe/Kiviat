@@ -18,9 +18,9 @@ public class Line {
 
     private ArrayList<ChangeListener> listerList;
     private String name;
-    private int value;
-    private int min;
-    private int max;
+    private double value;
+    private double min;
+    private double max;
     private int nbColumn;
     private Vector vector;
 
@@ -36,7 +36,7 @@ public class Line {
         this(new String("Default Name"), 0, 0, 0);
     }
 
-    public Line(String name, int v, int vmin, int vmax) {
+    public Line(String name, double v, double vmin, double vmax) {
         this.name = name;
         this.value = v;
         this.min = vmin;
@@ -46,9 +46,9 @@ public class Line {
         vector.add(v);
         vector.add(vmin);
         vector.add(vmax);
-        
+
     }
-    
+
     public String getName() {
         return name;
     }
@@ -65,28 +65,28 @@ public class Line {
         this.nbColumn = nbColumn;
     }
 
-    public int getMinimum() {
-        return min;
-    }
-
-    public void setMinimum(int newMinimum) {
-        min = newMinimum;
-    }
-
-    public int getMaximum() {
-        return max;
-    }
-
-    public void setMaximum(int newMaximum) {
-        max = newMaximum;
-    }
-
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(int newValue) {
-        value = newValue;
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public double getMin() {
+        return min;
+    }
+
+    public void setMin(double min) {
+        this.min = min;
+    }
+
+    public double getMax() {
+        return max;
+    }
+
+    public void setMax(double max) {
+        this.max = max;
     }
 
     public void addChangeListener(ChangeListener x) {
