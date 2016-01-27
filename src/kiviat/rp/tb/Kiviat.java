@@ -49,10 +49,11 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         nbAxes = this.model.getRowCount();
         double angle = 360.0 / (double) nbAxes;
         for (int i = 0; i < nbAxes; i++) {
+            String name = (String) this.model.getValueAt(i, 0);
             Double value = (Double) this.model.getValueAt(i, 1);
             Double min = (Double) this.model.getValueAt(i, 2);
             Double max = (Double) this.model.getValueAt(i, 3);
-            addLine(0.0 + (angle * i), value, min, max);
+            addLine(name, 0.0 + (angle * i), value, min, max);
 //            Integer value = (Integer) this.model.getValueAt(i, 1);
 //            Integer min = (Integer) this.model.getValueAt(i, 2);
 //            Integer max = (Integer) this.model.getValueAt(i, 3);
@@ -69,8 +70,8 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
     }
 
     //[A FAIRE] Il faut qu'on puisse ajouter le nom!
-    public void addLine(double angle, double value, double min, double max) {
-        ItemKiviat item = new ItemKiviat(angle, value, min, max);
+    public void addLine(String name, double angle, double value, double min, double max) {
+        ItemKiviat item = new ItemKiviat(name, angle, value, min, max);
         listItem.add(item);
     }
 
