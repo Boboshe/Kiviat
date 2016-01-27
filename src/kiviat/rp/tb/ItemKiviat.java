@@ -33,8 +33,6 @@ public class ItemKiviat extends JComponent {
     private double cursorSize = 5;
 
     private double value;
-
-    
     private double min;
     private double max;
 

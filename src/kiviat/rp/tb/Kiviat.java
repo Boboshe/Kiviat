@@ -27,6 +27,10 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
      */
     private ArrayList<ItemKiviat> listItem = new ArrayList<ItemKiviat>();
 
+    public ArrayList<ItemKiviat> getListItem() {
+        return listItem;
+    }
+
     public Kiviat() {
         initComponents();
         this.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -45,10 +49,14 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         nbAxes = this.model.getRowCount();
         double angle = 360.0 / (double) nbAxes;
         for (int i = 0; i < nbAxes; i++) {
-            Integer value = (Integer) (this.model.getValueAt(i, 1));//(int)
-            Integer min = (Integer) this.model.getValueAt(i, 2);
-            Integer max = (Integer) this.model.getValueAt(i, 3);
-            addLine(0.0 + (angle * i), value.doubleValue(), min.doubleValue(), max.doubleValue());
+            Double value = (Double) this.model.getValueAt(i, 1);
+            Double min = (Double) this.model.getValueAt(i, 2);
+            Double max = (Double) this.model.getValueAt(i, 3);
+            addLine(0.0 + (angle * i), value, min, max);
+//            Integer value = (Integer) this.model.getValueAt(i, 1);
+//            Integer min = (Integer) this.model.getValueAt(i, 2);
+//            Integer max = (Integer) this.model.getValueAt(i, 3);
+//            addLine(0.0 + (angle * i), value.doubleValue(), min.doubleValue(), max.doubleValue());            
         }
         for (ItemKiviat item : listItem) {
             this.add(item);
@@ -60,6 +68,7 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         return new Dimension(size, size);
     }
 
+    //[A FAIRE] Il faut qu'on puisse ajouter le nom!
     public void addLine(double angle, double value, double min, double max) {
         ItemKiviat item = new ItemKiviat(angle, value, min, max);
         listItem.add(item);
@@ -85,15 +94,14 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 772, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 772, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 484, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 484, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
