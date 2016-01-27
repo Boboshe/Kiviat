@@ -9,34 +9,50 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Boris
  */
-public class Kiviat extends javax.swing.JLayeredPane {
-    
+public class Kiviat extends javax.swing.JLayeredPane implements TableModelListener {
+
     private int size = 400;
-    
+    private DefaultTableModel model;
+
     /**
      * Creates new form Kiviat
      */
-    
     private ArrayList<ItemKiviat> listItem = new ArrayList<ItemKiviat>();
-    
+
     public Kiviat() {
         initComponents();
         this.setBorder(BorderFactory.createLineBorder(Color.black));
-        addLine(0,8,0,20);
-        addLine(-100,8,0,20);
-        addLine(45,5,0,20);
-        addLine(90,5,0,20);
-        addLine(0,5,0,20);
-        for(ItemKiviat item : listItem){
+        //addLine(0,8,0,20);
+        //addLine(-100,8,0,20);
+//        addLine(45,5,0,20);
+//        addLine(90,5,0,20);
+//        addLine(0,5,0,20);
+
+    }
+
+    public void setModel(DefaultTableModel model) {
+        this.model = model;
+        listItem.clear();
+        int nbAxes;
+        nbAxes = this.model.getRowCount();
+        double angle = 360.0 / (double) nbAxes;
+        for (int i = 0; i < nbAxes; i++) {
+            Integer value = (Integer) (this.model.getValueAt(i, 1));//(int)
+            Integer min = (Integer) this.model.getValueAt(i, 2);
+            Integer max = (Integer) this.model.getValueAt(i, 3);
+            addLine(0.0 + (angle * i), value.doubleValue(), min.doubleValue(), max.doubleValue());
+        }
+        for (ItemKiviat item : listItem) {
             this.add(item);
         }
-      
-        
     }
 
     @Override
@@ -44,19 +60,19 @@ public class Kiviat extends javax.swing.JLayeredPane {
         return new Dimension(size, size);
     }
 
-    public void addLine(double angle, double value, double min, double max){
+    public void addLine(double angle, double value, double min, double max) {
         ItemKiviat item = new ItemKiviat(angle, value, min, max);
         listItem.add(item);
     }
-    
+
     @Override
-    public void setBounds (int x, int y, int w, int h){
+    public void setBounds(int x, int y, int w, int h) {
         super.setBounds(x, y, w, h);
-        for(ItemKiviat item : listItem){
+        for (ItemKiviat item : listItem) {
             item.setBounds(0, 0, w, h);
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -81,4 +97,21 @@ public class Kiviat extends javax.swing.JLayeredPane {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        if (e.getType() == TableModelEvent.UPDATE) {
+            int numRow = e.getFirstRow();
+            Integer newValue = Integer.parseInt((String) model.getValueAt(e.getFirstRow(), e.getColumn()));
+            listItem.get(numRow).setValue(newValue.doubleValue());
+
+            System.out.println(model.getValueAt(e.getFirstRow(), e.getColumn()).toString());
+
+        } else if (e.getType() == TableModelEvent.INSERT) {
+            //TOdo
+        } else if (e.getType() == TableModelEvent.DELETE) {
+            //TOdo
+        }
+
+        repaint();
+    }
 }

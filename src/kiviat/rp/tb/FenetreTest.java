@@ -17,8 +17,9 @@ public class FenetreTest extends javax.swing.JFrame {
 
     private DefaultTableModel myTableModel;
     private Vector columnName = new Vector();
-    private Line lign1 = new Line("axe1", 0, 10, 5);
-    private Line lign2 = new Line("axe2", 0, 10, 5);
+    private Line lign1 = new Line("axe1", 2, 1, 10);
+    private Line lign2 = new Line("axe2", 7, 5, 10);
+    private Line lign3 = new Line("axe3", 5, 0, 5);
 
     /**
      * Creates new form NewJFrame
@@ -31,32 +32,25 @@ public class FenetreTest extends javax.swing.JFrame {
         columnName.add("Maximum");
 
         myTableModel = new DefaultTableModel(columnName, 0);
+        myTableModel.addTableModelListener(kiviat1);
 
         myTableModel.addRow(lign1.getVector());
         myTableModel.addRow(lign2.getVector());
+        myTableModel.addRow(lign3.getVector());
         
         
-        /*
-        ArrayList<AxeModel> Liste de ligne
-        modifierAxe(AxeModel axe, int column) => Modifier un élément de la ligne
-        ajouterAxe(AxeModel axe)
-        supprimerAxe(AxeModel axe)
-        */
+        
 
        
         
         
-//        new Object[] {"Value","minValue","maxValue","Name"}
+
         jTable1.setModel(myTableModel);
-        //kiviat1.addLine();
+        kiviat1.setModel(myTableModel);
 
     }
 
-    /*
-     new Object[][] {
-     new Object[] {myListAxe.get(0).getValue(),myListAxe.get(0).getMinimum(),myListAxe.get(0).getMaximum(),myListAxe.get(0).getName()}
-     }
-     */
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

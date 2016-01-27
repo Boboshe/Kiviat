@@ -22,7 +22,7 @@ import javax.swing.JComponent;
 public class ItemKiviat extends JComponent {
 
     private Line2D line;
-    private double lineLength = 100;
+    private double lineLength = 150;
     private double angle;
     private double size = 400;
     private double decalage = 10; 
@@ -30,10 +30,11 @@ public class ItemKiviat extends JComponent {
     private double centreY = size/2;
 
     private Ellipse2D cursor;
-    private Point2D centre = new Point2D.Double(200.0, 200.0);
     private double cursorSize = 5;
 
     private double value;
+
+    
     private double min;
     private double max;
 
@@ -43,6 +44,10 @@ public class ItemKiviat extends JComponent {
         this.value = value;
         this.min = min;
         this.max = max;
+    }
+    
+    public void setValue(double value) {
+        this.value = value;
     }
 
     @Override
@@ -82,12 +87,7 @@ public class ItemKiviat extends JComponent {
         return new Point2D.Double(x,y);
     }
 
-    private Point2D angletoCoord() {
-        double x = Math.cos(Math.toRadians(angle)) * lineLength;
-        double y = -Math.sin(Math.toRadians(angle)) * lineLength;
-        return new Point2D.Double(x+200,y+200);
-        
-    }
+   
     
    
 
@@ -97,7 +97,7 @@ public class ItemKiviat extends JComponent {
         if (interval != 0.0) {
             pas = lineLength / interval;
         }
-        double rayon = pas * value;
+        double rayon = pas * (value-min);
         double x = Math.cos(Math.toRadians(angle)) * (rayon+decalage);
         double y = -Math.sin(Math.toRadians(angle)) * (rayon+decalage);
         x += centreX;
