@@ -19,19 +19,23 @@ public class FenetreTest extends javax.swing.JFrame {
     private DefaultTableModel myTableModel;
     private Vector columnName = new Vector();
     //Ligne entrée en dur
-    private Line lign1 = new Line("axe1", 2, 1, 10);
-    private Line lign2 = new Line("axe2", 7, 5, 10);
-    private Line lign3 = new Line("axe3", 5, 0, 5);
+    private final Line lign1 = new Line("axe1", 2, 1, 10);
+    private final Line lign2 = new Line("axe2", 7, 5, 10);
+    private final Line lign3 = new Line("axe3", 5, 0, 5);
+
+    private ArrayList<Line> rows = new ArrayList<>();
 
     private String axeName;
     private double axeValue;
     private double axeMin;
     private double axeMax;
 
-    private int codeErrVerif = -1;
+//    private int codeErrVerif = -1;
     private final int errMinMax = 0;
     private final int errNameExisting = 1;
     private final int errValue = 2;
+
+    private String msgErreurToSend = "";
 
     /**
      * Creates new form NewJFrame
@@ -40,7 +44,7 @@ public class FenetreTest extends javax.swing.JFrame {
         initComponents();
         setTitle("Fenetre Test Kiviat");
         msgErreur.setForeground(Color.red);
-        
+
         columnName.add("Name");
         columnName.add("Value");
         columnName.add("Minimum");
@@ -51,12 +55,23 @@ public class FenetreTest extends javax.swing.JFrame {
 
         myTableModel.addRow(lign1.getVector());
         myTableModel.addRow(lign2.getVector());
-
         myTableModel.addRow(lign3.getVector());
 
+        rows.add(lign1);
+        rows.add(lign2);
+        rows.add(lign3);
 
         jTable1.setModel(myTableModel);
         kiviat1.setModel(myTableModel);
+
+//        int i = 1;
+//        for (Line item : rows) {
+//            System.out.println("[ELEM_" + (i++) + "]");
+//            System.out.println("item name:" + item.getName());
+//            System.out.println("item value:" + item.getValue());
+//            System.out.println("item min:" + item.getMin());
+//            System.out.println("item max:" + item.getMax());
+//        }
     }
 
     /**
@@ -93,7 +108,6 @@ public class FenetreTest extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(jTable1);
-
 
         javax.swing.GroupLayout kiviat1Layout = new javax.swing.GroupLayout(kiviat1);
         kiviat1.setLayout(kiviat1Layout);
@@ -153,10 +167,9 @@ public class FenetreTest extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(msgErreur)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(msgErreur, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                .addContainerGap())
         );
-
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,7 +180,6 @@ public class FenetreTest extends javax.swing.JFrame {
                 .addComponent(kiviat1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -183,7 +195,6 @@ public class FenetreTest extends javax.swing.JFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(kiviat1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(29, Short.MAX_VALUE))
-
         );
 
         pack();
@@ -199,11 +210,18 @@ public class FenetreTest extends javax.swing.JFrame {
         axeMax = Double.parseDouble(axeMaxField.getText());
 
         Line lign = new Line(axeName, axeValue, axeMin, axeMax);
+        msgErreur.setText("");
+        initMsgErreur();
 
+        //Si la ligne est ok => on ajoute la ligne
         if (verifyRow(lign)) {
+            rows.add(lign);
             myTableModel.addRow(lign.getVector());
-        } else {
-            msgErreur.setText(sendMsgError(codeErrVerif));
+            jTable1.setModel(myTableModel);
+        } else { //Sinon on send le message d'erreur
+            //On reinitialise le message d'erreur a envoyer
+            msgErreur.setText(msgErreurToSend);
+            repaint();
         }
 
     }//GEN-LAST:event_addBtnActionPerformed
@@ -258,46 +276,73 @@ public class FenetreTest extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private boolean verifyRow(Line lign) {
+//        System.out.println("[Lign] axeName: " + lign.getName() + ", axeValue: " + lign.getValue() + ", axeMin: " + lign.getMin() + ", axeMax: " + lign.getMax());
+
+        //Les vérifications s'effectuent par l'inverse
+        //On initialise verif à true
         boolean verif = true;
 
         //Vérifie que min < Max.
-        if (lign.getMin() < lign.getMax()) {
+        //Si ce n'est pas le cas, min > Max, donc on passe verif à false
+        if (lign.getMin() > lign.getMax()) {
             verif = false;
-            codeErrVerif = errMinMax;
+//            codeErrVerif = errMinMax;
+            constituerMsgErreur(errMinMax);
         }
 
-        //Vérifie que le nom saisie,n'existe pas déjà.
-        for (ItemKiviat item : kiviat1.getListItem()) {
+        if (lign.getValue() < lign.getMin() || lign.getValue() > lign.getMax()) //Vérifie que la valeur est comprise entre min et Max.
+        //Si ce n'est pas le cas, (lign.getName() < lign.getMin()) [OU] (lign.getName() > lign.getMax()),
+        //alors on passe verif à false
+        {
+//            System.out.println("lign value:" + lign.getValue());
+//            System.out.println("lign min:" + lign.getMin());
+//            System.out.println("lign max:" + lign.getMax());
+            verif = false;
+//            codeErrVerif = errValue;
+            constituerMsgErreur(errValue);
+        }
+
+        //Vérifie que le nom saisie, n'existe pas déjà.
+        //Si ce n'est pas le cas, lign.getName() = item.getName() = un nom existe déjà,
+        //alors on passe verif à false
+        for (Line item : rows) {
             if (item.getName().equals(lign.getName())) {
                 verif = false;
-                codeErrVerif = errNameExisting;
+//                codeErrVerif = errNameExisting;
+                constituerMsgErreur(errNameExisting);
             }
         }
 
-        //Vérifie que la valeur est comprise entre min et Max.
-        if (lign.getValue() > lign.getMin() && lign.getValue() < lign.getMax()) {
-            verif = false;
-            codeErrVerif = errValue;
-        }
+        terminateMsg();
 
+        //Cas par défaut = true
+        //Sinon une des conditions n'est pas respectées = false
         return verif;
     }
 
-    private String sendMsgError(int codeErrVerif) {
-        String msgErreur = " *[ERREUR],";
-        
+    private void initMsgErreur() {
+        //reinstancie le message d'erreur à afficher
+        msgErreurToSend = "<html> *[ERREUR] ";
+    }
+
+    private void constituerMsgErreur(int codeErrVerif) {
+
         switch (codeErrVerif) {
             case errMinMax:
-                msgErreur += "La valeur du min doit être inférieure à celle du max.";
+                msgErreurToSend += "<br>La valeur du min doit être inférieure à celle du max.";
                 break;
             case errNameExisting:
-                msgErreur += "Le nom saisie existe déjà.";
+                msgErreurToSend += "<br>Le nom saisie existe déjà.";
                 break;
             case errValue:
-                msgErreur += "La valeur doit être comprise entre min et max.";                
+                msgErreurToSend += "<br>La valeur doit être comprise entre min et max.";
                 break;
         }
-        return msgErreur;
+        System.out.println("" + msgErreurToSend);
+    }
+
+    private void terminateMsg() {
+        msgErreurToSend += "</html>";
     }
 
 }

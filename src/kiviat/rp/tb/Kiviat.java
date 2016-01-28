@@ -31,10 +31,6 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
      */
     private ArrayList<ItemKiviat> listItem = new ArrayList<ItemKiviat>();
 
-    public ArrayList<ItemKiviat> getListItem() {
-        return listItem;
-    }
-
     public Kiviat() {
         initComponents();
         this.setBorder(BorderFactory.createLineBorder(Color.black));
