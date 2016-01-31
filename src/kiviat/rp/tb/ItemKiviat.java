@@ -38,7 +38,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     private double cursorSize = 10;
     private Point2D.Double pi;
     private Point2D.Double pf;
-    private Point2D.Double coordValue;
+    private Point2D.Double coordCursor;
     
 
     
@@ -49,12 +49,20 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     private double min;
     private double max;
     
+    public ItemKiviat() {
+//        line = new Line2D.Float(centre.x, centre.y, xAngle, yAngle);
+//        cursor = new Ellipse2D.Float(x, y, cursorSize, cursorSize);
 
+    }
+    
     public ItemKiviat(String name, double angle, double value, double min, double max) {
         super(); 
            
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+        
+        cursor = new Ellipse2D.Double();
+        line = new Line2D.Double();
         
         this.name = name;
         this.angle = angle;
@@ -65,17 +73,16 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         //Point de début et fin de la ligne
         pi = debutLine();
         pf = finLine();
-        
-        this.majCoordValue();
-        line = new Line2D.Float(pi, pf);
+        this.majCoordCursor();
+         
     }
     
     public void setValue(double value) {
         this.value = value;
     }
 
-    public Point2D.Double getCoordValue() {
-        return coordValue;
+    public Point2D.Double getCoordCursor() {
+        return coordCursor;
     }
     
     public Point2D.Double getPf() {
@@ -84,24 +91,22 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
 
     @Override
     public void paint(Graphics _g) {
+        super.paint(_g);
+        System.out.println("Paint : " +  name);
         
         Graphics2D g = (Graphics2D) _g;
         g.setStroke(new BasicStroke(2));
         
+        majVueCursor();
+        majVueLine();
+        
         g.draw(line);
+        
         g.setColor(Color.red);
         g.fill(cursor);
-        
-        //Ellipse2D.Double circle = new Ellipse2D.Double((size-((lineLength+decalage)*2))/2,(size-((lineLength+decalage)*2))/2, (lineLength+decalage)*2,(lineLength+decalage)*2);
-        //g.draw(circle);
-        
     }
 
-    public ItemKiviat() {
-//        line = new Line2D.Float(centre.x, centre.y, xAngle, yAngle);
-//        cursor = new Ellipse2D.Float(x, y, cursorSize, cursorSize);
-
-    }
+    
     
     private Point2D.Double debutLine(){
         double x = Math.cos(Math.toRadians(angle)) * decalage;
@@ -124,9 +129,23 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         return cursor.contains((double)x,(double)y);
     }
     
-    public void majCoordValue(){
-        coordValue = valuetoCoordCursor(miseEchelle(value));
-        cursor = new Ellipse2D.Double(centreCursor(coordValue).x, centreCursor(coordValue).y, cursorSize, cursorSize);
+    public void majCoordCursor(){
+        coordCursor = valuetoCoordCursor(miseEchelle(value));
+    }
+    
+    public void majVueCursor(){
+        cursor.setFrame(centreCursor(coordCursor).x, centreCursor(coordCursor).y, cursorSize, cursorSize);
+    }
+    
+    public void majVueLine(){
+        line.setLine(pi, pf);
+    }
+    
+    public void majVueAxe(double angle){
+        this.angle = angle;
+        pi = debutLine();
+        pf = finLine();
+        majCoordCursor();
     }
     
     
@@ -206,10 +225,10 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     @Override
     public void mouseDragged(MouseEvent e) {
         double l = projectOrtho(e.getX(), e.getY());
-        coordValue = valuetoCoordCursor(l);
-        cursor.setFrame(centreCursor(coordValue).x, centreCursor(coordValue).y, cursorSize, cursorSize);
+        coordCursor = valuetoCoordCursor(l);
+        
         repaint();
-        this.getParent().repaint();
+        //this.getParent().repaint();
     }
 
     @Override

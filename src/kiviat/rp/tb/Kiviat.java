@@ -47,10 +47,12 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
     }
 
     public void setModel(DefaultTableModel model) {
+        System.out.println("SET MODEL");
         this.model = model;
         listItem.clear();
         int nbAxes;
         nbAxes = this.model.getRowCount();
+        System.out.println("Nb axes : " + nbAxes);
         double angle = 360.0 / (double) nbAxes;
         for (int i = 0; i < nbAxes; i++) {
             String name = (String) this.model.getValueAt(i, 0);
@@ -63,9 +65,6 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
 //            Integer max = (Integer) this.model.getValueAt(i, 3);
 //            addLine(0.0 + (angle * i), value.doubleValue(), min.doubleValue(), max.doubleValue());            
         }
-        for (ItemKiviat item : listItem) {
-            this.add(item);
-        }
         repaint();
     }
 
@@ -76,21 +75,26 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
     
     @Override
     public void paint(Graphics _g) {
-        Polygon poly = new Polygon();
         super.paint(_g);
+        Polygon poly = new Polygon();
         for(ItemKiviat item : listItem){
-            Point2D.Double point = item.getCoordValue();
+            Point2D.Double point = item.getCoordCursor();
             poly.addPoint((int)point.x,(int)point.y);
         }
         _g.drawPolygon(poly);
+        
+        
+            
+        
     }
     
     
 
-    //[A FAIRE] Il faut qu'on puisse ajouter le nom!
+    //Crée un nouvel objet kiviat et l'ajoute à la liste
     public void addLine(String name, double angle, double value, double min, double max) {
         ItemKiviat item = new ItemKiviat(name, angle, value, min, max);
         listItem.add(item);
+        this.add(item);
     }
 
     @Override
@@ -127,17 +131,39 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
     @Override
     public void tableChanged(TableModelEvent e) {
         if (e.getType() == TableModelEvent.UPDATE) {
+            //Numéro de la ligne qui a été modifé
             int numRow = e.getFirstRow();
-            Integer newValue = Integer.parseInt((String) model.getValueAt(e.getFirstRow(), e.getColumn()));
+            
+            //Nouvelle valeur
+            Integer newValue = Integer.parseInt((String) model.getValueAt(numRow, e.getColumn()));
             listItem.get(numRow).setValue(newValue.doubleValue());
             
             for(ItemKiviat item : listItem){
-                item.majCoordValue();
+                item.majCoordCursor();
             }
-            repaint();
+            
 
         } else if (e.getType() == TableModelEvent.INSERT) {
-            //TOdo
+            //Numéro de la ligne qui a été modifé
+            int numRow = e.getFirstRow();
+            if(model != null){
+                int nbAxes = model.getRowCount();
+                double angle = 360.0 / (double) nbAxes;
+            
+                String name = (String) model.getValueAt(numRow, 0);
+                Double value = (Double) model.getValueAt(numRow, 1);
+                Double min = (Double) model.getValueAt(numRow, 2);
+                Double max = (Double) model.getValueAt(numRow, 3);
+       
+                addLine(name, 0.0 + (angle * nbAxes), value.doubleValue(), value.doubleValue(), value.doubleValue());
+                
+                for(int i = 0; i< nbAxes;i++){
+                    listItem.get(i).majVueAxe(0.0 + (angle * i));
+                }    
+            
+            }
+            
+            
         } else if (e.getType() == TableModelEvent.DELETE) {
             //TOdo
         }

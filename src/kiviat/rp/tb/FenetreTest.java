@@ -57,9 +57,9 @@ public class FenetreTest extends javax.swing.JFrame {
         myTableModel.addRow(lign2.getVector());
         myTableModel.addRow(lign3.getVector());
 
-        rows.add(lign1);
-        rows.add(lign2);
-        rows.add(lign3);
+        //rows.add(lign1);
+        //rows.add(lign2);
+        //rows.add(lign3);
 
         jTable1.setModel(myTableModel);
         kiviat1.setModel(myTableModel);
@@ -218,11 +218,14 @@ public class FenetreTest extends javax.swing.JFrame {
             rows.add(lign);
             myTableModel.addRow(lign.getVector());
             jTable1.setModel(myTableModel);
-            kiviat1.setModel(myTableModel);
-        } else { //Sinon on send le message d'erreur
+            //kiviat1.setModel(myTableModel);
+            //msgErreur.setText(msgErreurToSend);
+            this.validate();
+        } 
+        else { //Sinon on send le message d'erreur
             //On reinitialise le message d'erreur a envoyer
             msgErreur.setText(msgErreurToSend);
-            repaint();
+            //repaint();
         }
 
     }//GEN-LAST:event_addBtnActionPerformed
