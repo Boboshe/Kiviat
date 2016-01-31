@@ -38,6 +38,10 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     private double cursorSize = 10;
     private Point2D.Double pi;
     private Point2D.Double pf;
+    private Point2D.Double coordValue;
+    
+
+    
 
     private String name;
     private double angle;
@@ -62,12 +66,20 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         pi = debutLine();
         pf = finLine();
         
-        cursor = new Ellipse2D.Double(valuetoCoordCursor(miseEchelle(value)).x, valuetoCoordCursor(miseEchelle(value)).y, cursorSize, cursorSize);
+        this.majCoordValue();
         line = new Line2D.Float(pi, pf);
     }
     
     public void setValue(double value) {
         this.value = value;
+    }
+
+    public Point2D.Double getCoordValue() {
+        return coordValue;
+    }
+    
+    public Point2D.Double getPf() {
+        return pf;
     }
 
     @Override
@@ -78,7 +90,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         
         g.draw(line);
         g.setColor(Color.red);
-        g.draw(cursor);
+        g.fill(cursor);
         
         //Ellipse2D.Double circle = new Ellipse2D.Double((size-((lineLength+decalage)*2))/2,(size-((lineLength+decalage)*2))/2, (lineLength+decalage)*2,(lineLength+decalage)*2);
         //g.draw(circle);
@@ -112,6 +124,11 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         return cursor.contains((double)x,(double)y);
     }
     
+    public void majCoordValue(){
+        coordValue = valuetoCoordCursor(miseEchelle(value));
+        cursor = new Ellipse2D.Double(centreCursor(coordValue).x, centreCursor(coordValue).y, cursorSize, cursorSize);
+    }
+    
     
     private double miseEchelle(double val){
         double interval = max - min;
@@ -130,10 +147,12 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         x += centreX;
         y += centreY;
         
-        //On centre le curseur sur la ligne
-        x -= cursorSize/2;
-        y -= cursorSize/2;
+        
         return new Point2D.Double(x,y);
+    }
+    
+    private Point2D.Double centreCursor(Point2D.Double p){
+        return new Point2D.Double(p.getX() - cursorSize/2,p.getY() - cursorSize/2);
     }
     
     public double projectOrtho(int x, int y){
@@ -187,9 +206,10 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     @Override
     public void mouseDragged(MouseEvent e) {
         double l = projectOrtho(e.getX(), e.getY());
-        
-        cursor.setFrame(valuetoCoordCursor(l).x, valuetoCoordCursor(l).y, cursorSize, cursorSize);
+        coordValue = valuetoCoordCursor(l);
+        cursor.setFrame(centreCursor(coordValue).x, centreCursor(coordValue).y, cursorSize, cursorSize);
         repaint();
+        this.getParent().repaint();
     }
 
     @Override

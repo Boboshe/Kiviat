@@ -218,6 +218,7 @@ public class FenetreTest extends javax.swing.JFrame {
             rows.add(lign);
             myTableModel.addRow(lign.getVector());
             jTable1.setModel(myTableModel);
+            kiviat1.setModel(myTableModel);
         } else { //Sinon on send le message d'erreur
             //On reinitialise le message d'erreur a envoyer
             msgErreur.setText(msgErreurToSend);

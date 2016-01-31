@@ -6,9 +6,13 @@
 package kiviat.rp.tb;
 
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.event.TableModelEvent;
@@ -62,11 +66,23 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         for (ItemKiviat item : listItem) {
             this.add(item);
         }
+        repaint();
     }
 
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(size, size);
+    }
+    
+    @Override
+    public void paint(Graphics _g) {
+        Polygon poly = new Polygon();
+        super.paint(_g);
+        for(ItemKiviat item : listItem){
+            Point2D.Double point = item.getCoordValue();
+            poly.addPoint((int)point.x,(int)point.y);
+        }
+        _g.drawPolygon(poly);
     }
     
     
@@ -114,8 +130,11 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
             int numRow = e.getFirstRow();
             Integer newValue = Integer.parseInt((String) model.getValueAt(e.getFirstRow(), e.getColumn()));
             listItem.get(numRow).setValue(newValue.doubleValue());
-
-            System.out.println(model.getValueAt(e.getFirstRow(), e.getColumn()).toString());
+            
+            for(ItemKiviat item : listItem){
+                item.majCoordValue();
+            }
+            repaint();
 
         } else if (e.getType() == TableModelEvent.INSERT) {
             //TOdo
