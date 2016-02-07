@@ -8,6 +8,7 @@ package kiviat.rp.tb;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Vector;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -31,11 +32,18 @@ public class FenetreTest extends javax.swing.JFrame {
     private double axeMax;
 
 //    private int codeErrVerif = -1;
-    private final int errMinMax = 0;
-    private final int errNameExisting = 1;
-    private final int errValue = 2;
+    private final int ERROR_MIN_MAX = 0;
+    private final int ERROR_NAME_EXISTING = 1;
+    private final int ERROR_VALUE = 2;
+    private final int ERROR_NAME_NOT_EXISTING = 3;
+
+    private final int ADD = 0;
+    private final int SUPP = 1;
+
+    private int indexSupp = -1;
 
     private String msgErreurToSend = "";
+//    private Kiviat kiviat1 = new Kiviat();
 
     /**
      * Creates new form NewJFrame
@@ -53,6 +61,10 @@ public class FenetreTest extends javax.swing.JFrame {
         myTableModel = new DefaultTableModel(columnName, 0);
         myTableModel.addTableModelListener(kiviat1);
 
+        rows.add(lign1);
+        rows.add(lign2);
+        rows.add(lign3);
+
         myTableModel.addRow(lign1.getVector());
         myTableModel.addRow(lign2.getVector());
         myTableModel.addRow(lign3.getVector());
@@ -60,7 +72,6 @@ public class FenetreTest extends javax.swing.JFrame {
         //rows.add(lign1);
         //rows.add(lign2);
         //rows.add(lign3);
-
         jTable1.setModel(myTableModel);
         kiviat1.setModel(myTableModel);
 
@@ -85,7 +96,6 @@ public class FenetreTest extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        kiviat1 = new kiviat.rp.tb.Kiviat();
         jPanel1 = new javax.swing.JPanel();
         axeNameField = new javax.swing.JTextField();
         axeValueField = new javax.swing.JTextField();
@@ -93,6 +103,8 @@ public class FenetreTest extends javax.swing.JFrame {
         axeMaxField = new javax.swing.JTextField();
         addBtn = new javax.swing.JButton();
         msgErreur = new javax.swing.JLabel();
+        suppBtn = new javax.swing.JButton();
+        kiviat1 = new kiviat.rp.tb.Kiviat();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -109,17 +121,6 @@ public class FenetreTest extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout kiviat1Layout = new javax.swing.GroupLayout(kiviat1);
-        kiviat1.setLayout(kiviat1Layout);
-        kiviat1Layout.setHorizontalGroup(
-            kiviat1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 398, Short.MAX_VALUE)
-        );
-        kiviat1Layout.setVerticalGroup(
-            kiviat1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 398, Short.MAX_VALUE)
-        );
-
         axeNameField.setText("row0");
 
         axeValueField.setText("0");
@@ -135,6 +136,13 @@ public class FenetreTest extends javax.swing.JFrame {
             }
         });
 
+        suppBtn.setText("Supp Row");
+        suppBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                suppBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -143,6 +151,7 @@ public class FenetreTest extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(msgErreur, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(axeNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -152,7 +161,7 @@ public class FenetreTest extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(axeMaxField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(msgErreur, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(suppBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -167,8 +176,21 @@ public class FenetreTest extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(msgErreur, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(suppBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(msgErreur, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout kiviat1Layout = new javax.swing.GroupLayout(kiviat1);
+        kiviat1.setLayout(kiviat1Layout);
+        kiviat1Layout.setHorizontalGroup(
+            kiviat1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 398, Short.MAX_VALUE)
+        );
+        kiviat1Layout.setVerticalGroup(
+            kiviat1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 398, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -189,11 +211,11 @@ public class FenetreTest extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(kiviat1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(kiviat1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
@@ -202,33 +224,62 @@ public class FenetreTest extends javax.swing.JFrame {
 
     /* --- Boutons ---*/
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        // TODO add your handling code here:
-        axeName = axeNameField.getText();
 
+        //On récupère les informations des JTextField
+        axeName = axeNameField.getText();
         axeValue = Double.parseDouble(axeValueField.getText());
         axeMin = Double.parseDouble(axeMinField.getText());
         axeMax = Double.parseDouble(axeMaxField.getText());
 
+        //On créer une ligne
         Line lign = new Line(axeName, axeValue, axeMin, axeMax);
-        msgErreur.setText("");
-        initMsgErreur();
 
-        //Si la ligne est ok => on ajoute la ligne
-        if (verifyRow(lign)) {
+        //On réinitialise le JLabel chargé de l'affichage du message d'erreur
+        msgErreur.setText("");
+
+        //Si la ligne est ok => on l'ajoute
+        if (verifyRow(lign, ADD)) {
             rows.add(lign);
             myTableModel.addRow(lign.getVector());
             jTable1.setModel(myTableModel);
             //kiviat1.setModel(myTableModel);
             //msgErreur.setText(msgErreurToSend);
             this.validate();
-        } 
-        else { //Sinon on send le message d'erreur
+        } else { //Sinon on send le message d'erreur correspondant
             //On reinitialise le message d'erreur a envoyer
             msgErreur.setText(msgErreurToSend);
-            //repaint();
         }
 
     }//GEN-LAST:event_addBtnActionPerformed
+
+    private void suppBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppBtnActionPerformed
+
+        //On récupère le nom de la ligne que l'on veut supprimer
+        axeName = axeNameField.getText();
+
+        //On créer une ligne
+        Line lign = new Line(axeName);
+
+        //On réinitialise le JLabel chargé de l'affichage du message d'erreur
+        msgErreur.setText("");
+        //On réinitialise l'index de la row à supprimer
+        indexSupp = -1;
+
+        //Si la ligne est ok => on l'ajoute
+        if (verifyRow(lign, SUPP)) {
+            //Normalement pas besoin de faire cette verification
+            if (indexSupp != -1) {
+                rows.remove(indexSupp);
+                myTableModel.removeRow(indexSupp);
+            }
+            jTable1.setModel(myTableModel);
+            this.validate();
+        } else { //Sinon on send le message d'erreur correspondant
+            //On reinitialise le message d'erreur a envoyer
+            msgErreur.setText(msgErreurToSend);
+        }
+
+    }//GEN-LAST:event_suppBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -277,21 +328,39 @@ public class FenetreTest extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private kiviat.rp.tb.Kiviat kiviat1;
     private javax.swing.JLabel msgErreur;
+    private javax.swing.JButton suppBtn;
     // End of variables declaration//GEN-END:variables
 
-    private boolean verifyRow(Line lign) {
+    private boolean verifyRow(Line lign, int cmd) {
+        initMsgErreur();
 //        System.out.println("[Lign] axeName: " + lign.getName() + ", axeValue: " + lign.getValue() + ", axeMin: " + lign.getMin() + ", axeMax: " + lign.getMax());
 
-        //Les vérifications s'effectuent par l'inverse
-        //On initialise verif à true
         boolean verif = true;
+
+        if (cmd == ADD) {
+            verif = verifAddRow(lign, true);
+        } else if (cmd == SUPP) {
+            verif = verifSuppRow(lign, false);
+        }
+
+        terminateMsg();
+
+        //Cas par défaut = true
+        //Sinon une des conditions n'est pas respectées = false
+        return verif;
+    }
+
+    private boolean verifAddRow(Line lign, boolean verif) {
+        //Les vérifications s'effectuent par l'inverse
+        //On initialise verif à true, et si on trouve une erreur on le passe à false
+//        verif = true;
 
         //Vérifie que min < Max.
         //Si ce n'est pas le cas, min > Max, donc on passe verif à false
         if (lign.getMin() > lign.getMax()) {
             verif = false;
 //            codeErrVerif = errMinMax;
-            constituerMsgErreur(errMinMax);
+            constituerMsgErreur(ERROR_MIN_MAX);
         }
 
         if (lign.getValue() < lign.getMin() || lign.getValue() > lign.getMax()) //Vérifie que la valeur est comprise entre min et Max.
@@ -303,7 +372,7 @@ public class FenetreTest extends javax.swing.JFrame {
 //            System.out.println("lign max:" + lign.getMax());
             verif = false;
 //            codeErrVerif = errValue;
-            constituerMsgErreur(errValue);
+            constituerMsgErreur(ERROR_VALUE);
         }
 
         //Vérifie que le nom saisie, n'existe pas déjà.
@@ -313,14 +382,34 @@ public class FenetreTest extends javax.swing.JFrame {
             if (item.getName().equals(lign.getName())) {
                 verif = false;
 //                codeErrVerif = errNameExisting;
-                constituerMsgErreur(errNameExisting);
+                constituerMsgErreur(ERROR_NAME_EXISTING);
             }
         }
 
-        terminateMsg();
+        return verif;
+    }
 
-        //Cas par défaut = true
-        //Sinon une des conditions n'est pas respectées = false
+    private boolean verifSuppRow(Line lign, boolean verif) {
+        //Verif est à false au départ.
+//        verif = false;
+
+        //Vérifie que le nom saisie, existe bien dans la liste
+        int i = -1;
+        for (Line item : rows) {
+            i++;
+//            System.out.println("i=" + i);
+            if (item.getName().equals(lign.getName())) {
+                verif = true;
+                indexSupp = i;
+//                System.out.println("indexSupp=" + indexSupp);
+            }
+        }
+
+        //Si on ne trouve pas le nom, on constitue le message d'erreur correpsondant
+        if (!verif) {
+            constituerMsgErreur(ERROR_NAME_NOT_EXISTING);
+        }
+
         return verif;
     }
 
@@ -332,14 +421,19 @@ public class FenetreTest extends javax.swing.JFrame {
     private void constituerMsgErreur(int codeErrVerif) {
 
         switch (codeErrVerif) {
-            case errMinMax:
+            //Ajouter
+            case ERROR_MIN_MAX:
                 msgErreurToSend += "<br>La valeur du min doit être inférieure à celle du max.";
                 break;
-            case errNameExisting:
+            case ERROR_NAME_EXISTING:
                 msgErreurToSend += "<br>Le nom saisie existe déjà.";
                 break;
-            case errValue:
+            case ERROR_VALUE:
                 msgErreurToSend += "<br>La valeur doit être comprise entre min et max.";
+                break;
+            //Supprimer
+            case ERROR_NAME_NOT_EXISTING:
+                msgErreurToSend += "<br>Le nom de la ligne à supprimer n'existe pas.";
                 break;
         }
         System.out.println("" + msgErreurToSend);

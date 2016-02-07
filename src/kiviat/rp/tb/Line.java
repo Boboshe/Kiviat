@@ -32,10 +32,17 @@ public class Line {
         this.vector = vector;
     }
 
+    //Constructeur par défaut
     public Line() {
         this(new String("Default Name"), 0, 0, 0);
     }
 
+    //Nécessaire pour la supression
+    public Line(String name) {
+        this(name, 0, 0, 0);
+    }    
+
+    //Nécessaire pour l'ajout
     public Line(String name, double v, double vmin, double vmax) {
         this.name = name;
         this.value = v;
