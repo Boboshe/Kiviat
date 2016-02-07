@@ -129,14 +129,14 @@ public class FenetreTest extends javax.swing.JFrame {
 
         axeMaxField.setText("0");
 
-        addBtn.setText("Add Row");
+        addBtn.setText("Add");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addBtnActionPerformed(evt);
             }
         });
 
-        suppBtn.setText("Supp Row");
+        suppBtn.setText("Supp");
         suppBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 suppBtnActionPerformed(evt);
@@ -238,12 +238,13 @@ public class FenetreTest extends javax.swing.JFrame {
         msgErreur.setText("");
 
         //Si la ligne est ok => on l'ajoute
-        if (verifyRow(lign, ADD)) {
+        if (verifyAxis(lign, ADD)) {
             rows.add(lign);
             myTableModel.addRow(lign.getVector());
             jTable1.setModel(myTableModel);
             //kiviat1.setModel(myTableModel);
             //msgErreur.setText(msgErreurToSend);
+            System.out.println("Axe ajouté");
             this.validate();
         } else { //Sinon on send le message d'erreur correspondant
             //On reinitialise le message d'erreur a envoyer
@@ -266,13 +267,14 @@ public class FenetreTest extends javax.swing.JFrame {
         indexSupp = -1;
 
         //Si la ligne est ok => on l'ajoute
-        if (verifyRow(lign, SUPP)) {
+        if (verifyAxis(lign, SUPP)) {
             //Normalement pas besoin de faire cette verification
             if (indexSupp != -1) {
                 rows.remove(indexSupp);
                 myTableModel.removeRow(indexSupp);
             }
             jTable1.setModel(myTableModel);
+            System.out.println("Axe supprimé");
             this.validate();
         } else { //Sinon on send le message d'erreur correspondant
             //On reinitialise le message d'erreur a envoyer
@@ -331,16 +333,24 @@ public class FenetreTest extends javax.swing.JFrame {
     private javax.swing.JButton suppBtn;
     // End of variables declaration//GEN-END:variables
 
-    private boolean verifyRow(Line lign, int cmd) {
+    /**
+     * Fonction permettant de vérifier si l'axe est bien constituée pour l'une des commande suivantes:
+     * - cmd = ADD : pour l'ajout d'un axe.
+     * - cmd = SUPP : pour la suppression d'un axe.
+     * @param lign
+     * @param cmd
+     * @return 
+     */
+    private boolean verifyAxis(Line lign, int cmd) {
         initMsgErreur();
 //        System.out.println("[Lign] axeName: " + lign.getName() + ", axeValue: " + lign.getValue() + ", axeMin: " + lign.getMin() + ", axeMax: " + lign.getMax());
 
         boolean verif = true;
 
         if (cmd == ADD) {
-            verif = verifAddRow(lign, true);
+            verif = verifAddAxis(lign, true);
         } else if (cmd == SUPP) {
-            verif = verifSuppRow(lign, false);
+            verif = verifSuppAxis(lign, false);
         }
 
         terminateMsg();
@@ -350,7 +360,7 @@ public class FenetreTest extends javax.swing.JFrame {
         return verif;
     }
 
-    private boolean verifAddRow(Line lign, boolean verif) {
+    private boolean verifAddAxis(Line lign, boolean verif) {
         //Les vérifications s'effectuent par l'inverse
         //On initialise verif à true, et si on trouve une erreur on le passe à false
 //        verif = true;
@@ -389,7 +399,7 @@ public class FenetreTest extends javax.swing.JFrame {
         return verif;
     }
 
-    private boolean verifSuppRow(Line lign, boolean verif) {
+    private boolean verifSuppAxis(Line lign, boolean verif) {
         //Verif est à false au départ.
 //        verif = false;
 
@@ -433,7 +443,8 @@ public class FenetreTest extends javax.swing.JFrame {
                 break;
             //Supprimer
             case ERROR_NAME_NOT_EXISTING:
-                msgErreurToSend += "<br>Le nom de la ligne à supprimer n'existe pas.";
+                msgErreurToSend += "<br>Le nom de l'axe à supprimer n'existe pas.";
+                msgErreurToSend += "<br>Seul le nom de l'axe suffit pour le supprimer.";
                 break;
         }
         System.out.println("" + msgErreurToSend);

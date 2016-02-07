@@ -144,7 +144,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="addBtn">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Add Row"/>
+            <Property name="text" type="java.lang.String" value="Add"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addBtnActionPerformed"/>
@@ -154,7 +154,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="suppBtn">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Supp Row"/>
+            <Property name="text" type="java.lang.String" value="Supp"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="suppBtnActionPerformed"/>

@@ -96,6 +96,12 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         listItem.add(item);
         this.add(item);
     }
+    
+    //Crée un nouvel objet kiviat et l'ajoute à la liste
+    public void removeLine(int index) {
+        listItem.remove(index);
+        this.remove(index);
+    }
 
     @Override
     public void setBounds(int x, int y, int w, int h) {
@@ -150,7 +156,7 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
                 int nbAxes = model.getRowCount();
                 double angle = 360.0 / (double) nbAxes;
             
-                String name = (String) model.getValueAt(numRow, 0);
+                String name = (String) model.getValueAt(numRow, 0); 
                 Double value = (Double) model.getValueAt(numRow, 1);
                 Double min = (Double) model.getValueAt(numRow, 2);
                 Double max = (Double) model.getValueAt(numRow, 3);
@@ -165,7 +171,20 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
             
             
         } else if (e.getType() == TableModelEvent.DELETE) {
-            //TOdo
+            //Numéro de la ligne qui a été modifé
+            int numRow = e.getFirstRow();
+            if(model != null){
+       
+                removeLine(numRow);
+                
+                int nbAxes = model.getRowCount();
+                double angle = 360.0 / (double) nbAxes;
+                
+                for(int i = 0; i< nbAxes;i++){
+                    listItem.get(i).majVueAxe(0.0 + (angle * i));
+                }    
+            
+            }
         }
 
         repaint();
