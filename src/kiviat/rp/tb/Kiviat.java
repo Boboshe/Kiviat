@@ -92,7 +92,7 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
 
     //Crée un nouvel objet kiviat et l'ajoute à la liste
     public void addLine(String name, double angle, double value, double min, double max) {
-        ItemKiviat item = new ItemKiviat(name, angle, value, min, max);
+        ItemKiviat item = new ItemKiviat(name, angle, value, min, max, model);
         listItem.add(item);
         this.add(item);
     }
@@ -142,6 +142,7 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
             
             //Nouvelle valeur
             Integer newValue = Integer.parseInt((String) model.getValueAt(numRow, e.getColumn()));
+                      
             listItem.get(numRow).setValue(newValue.doubleValue());
             
             for(ItemKiviat item : listItem){

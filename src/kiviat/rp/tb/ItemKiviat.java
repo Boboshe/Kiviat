@@ -18,6 +18,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import javax.swing.JComponent;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -39,9 +41,10 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     private Point2D.Double pi;
     private Point2D.Double pf;
     private Point2D.Double coordCursor;
+    private double valueOnDrag;
     
 
-    
+    private DefaultTableModel m;
 
     private String name;
     private double angle;
@@ -55,7 +58,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
 
     }
     
-    public ItemKiviat(String name, double angle, double value, double min, double max) {
+    public ItemKiviat(String name, double angle, double value, double min, double max, DefaultTableModel m) {
         super(); 
            
         this.addMouseListener(this);
@@ -69,6 +72,8 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         this.value = value;
         this.min = min;
         this.max = max;
+        
+        this.m = m;
         
         //Point de début et fin de la ligne
         pi = debutLine();
@@ -92,7 +97,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     @Override
     public void paint(Graphics _g) {
         super.paint(_g);
-        System.out.println("Paint : " +  name);
+        //System.out.println("Paint : " +  name);
         
         Graphics2D g = (Graphics2D) _g;
         g.setStroke(new BasicStroke(2));
@@ -102,8 +107,11 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         
         g.draw(line);
         
+        
         g.setColor(Color.red);
         g.fill(cursor);
+        
+        
     }
 
     
@@ -122,6 +130,10 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         x += centreX;
         y += centreY;
         return new Point2D.Double(x,y);
+    }
+    
+    private double getInterval(){
+        return max-min;
     }
     
     @Override
@@ -148,7 +160,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         majCoordCursor();
     }
     
-    
+    //Passe de l'échelle de la valeur[min-max] à l'échelle de la vue[0-linelength]
     private double miseEchelle(double val){
         double interval = max - min;
         double pas = 0.0;
@@ -159,6 +171,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         return res;
     }
     
+    //Trouve les coordonées à partie d'une valeur dans l'échelle de la vue [0_linelength]
     private Point2D.Double valuetoCoordCursor(double val) {
         
         double x = Math.cos(Math.toRadians(angle)) * (val+decalage);
@@ -198,18 +211,15 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     @Override
     public void mousePressed(MouseEvent e) {
         int x = e.getX();
-        int y = e.getY();
-        System.out.println("Clique : X : " + x + " ; " + " Y : " + y);
-        
-        if(this.contains(x, y)){
-            System.out.println("Item : " + name);
-        }
-        
+        int y = e.getY();        
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        
+        double newValue = arrondi();
+        coordCursor = valuetoCoordCursor(miseEchelle(newValue));
+        m.setValueAt(Double.toString(newValue), 0, 1);
+        repaint();
     }
 
     @Override
@@ -224,16 +234,35 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        double l = projectOrtho(e.getX(), e.getY());
-        coordCursor = valuetoCoordCursor(l);
-        
+        valueOnDrag = projectOrtho(e.getX(), e.getY());
+        coordCursor = valuetoCoordCursor(valueOnDrag);
         repaint();
-        //this.getParent().repaint();
+        
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
- 
+        
+        
+    }
+    
+    
+    //renvoie la nouvelle valeur dans l'echelle [min-max]
+    private double arrondi(){
+        double pas = lineLength/getInterval();
+        double newValue = valueOnDrag/pas;
+        System.out.println("Valeur avant arrondie : " + newValue);
+        newValue = Math.round(newValue) + min;
+        System.out.println("Valeur après arrondie : " + newValue);
+        return newValue;
+    }
+    
+    //affiche les graduation d'une ligne
+    private void grad(Graphics2D g){
+        double v;
+        for(int i = (int) min; i <= (int) max; i++){
+            g.fill(new Ellipse2D.Double(centreCursor(valuetoCoordCursor(miseEchelle(i))).x, centreCursor(valuetoCoordCursor(miseEchelle(i))).y, cursorSize-5, cursorSize-5));
+        }
     }
 
     
