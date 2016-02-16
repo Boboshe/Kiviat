@@ -8,7 +8,6 @@ package kiviat.rp.tb;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Vector;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,17 +18,20 @@ public class FenetreTest extends javax.swing.JFrame {
 
     private DefaultTableModel myTableModel;
     private Vector columnName = new Vector();
+    
     //Ligne entrée en dur
-    private final Line lign1 = new Line("axe1", 2, 1, 10);
-    private final Line lign2 = new Line("axe2", 7, 5, 10);
-    private final Line lign3 = new Line("axe3", 5, 0, 5);
-
-    private ArrayList<Line> rows = new ArrayList<>();
+    private Line l1 = new Line("axe1", 1, 0 ,10);
+    private Line l2 = new Line("axe2", 1, 0 ,10);
+    private Line l3 = new Line("axe3", 1, 0 ,10);
+    
+    ArrayList<Line> rows = new ArrayList<Line>();
+    
+    
 
     private String axeName;
-    private double axeValue;
-    private double axeMin;
-    private double axeMax;
+    private Integer axeValue;
+    private Integer axeMin;
+    private Integer axeMax;
 
 //    private int codeErrVerif = -1;
     private final int ERROR_MIN_MAX = 0;
@@ -43,7 +45,7 @@ public class FenetreTest extends javax.swing.JFrame {
     private int indexSupp = -1;
 
     private String msgErreurToSend = "";
-//    private Kiviat kiviat1 = new Kiviat();
+
 
     /**
      * Creates new form NewJFrame
@@ -60,29 +62,22 @@ public class FenetreTest extends javax.swing.JFrame {
 
         myTableModel = new DefaultTableModel(columnName, 0);
         myTableModel.addTableModelListener(kiviat1);
+        
+        rows.add(l1);
+        rows.add(l2);
+        rows.add(l3);
 
-        rows.add(lign1);
-        rows.add(lign2);
-        rows.add(lign3);
+        
+        //On ajoute les vecteurs à la table
+        myTableModel.addRow(l1.getVector());
+        myTableModel.addRow(l2.getVector());
+        myTableModel.addRow(l3.getVector());
+        
 
-        myTableModel.addRow(lign1.getVector());
-        myTableModel.addRow(lign2.getVector());
-        myTableModel.addRow(lign3.getVector());
-
-        //rows.add(lign1);
-        //rows.add(lign2);
-        //rows.add(lign3);
+        
         jTable1.setModel(myTableModel);
         kiviat1.setModel(myTableModel);
 
-//        int i = 1;
-//        for (Line item : rows) {
-//            System.out.println("[ELEM_" + (i++) + "]");
-//            System.out.println("item name:" + item.getName());
-//            System.out.println("item value:" + item.getValue());
-//            System.out.println("item min:" + item.getMin());
-//            System.out.println("item max:" + item.getMax());
-//        }
     }
 
     /**
@@ -227,9 +222,9 @@ public class FenetreTest extends javax.swing.JFrame {
 
         //On récupère les informations des JTextField
         axeName = axeNameField.getText();
-        axeValue = Double.parseDouble(axeValueField.getText());
-        axeMin = Double.parseDouble(axeMinField.getText());
-        axeMax = Double.parseDouble(axeMaxField.getText());
+        axeValue = Integer.parseInt(axeValueField.getText());
+        axeMin = Integer.parseInt(axeMinField.getText());
+        axeMax = Integer.parseInt(axeMaxField.getText());
 
         //On créer une ligne
         Line lign = new Line(axeName, axeValue, axeMin, axeMax);
@@ -242,7 +237,7 @@ public class FenetreTest extends javax.swing.JFrame {
             rows.add(lign);
             myTableModel.addRow(lign.getVector());
             jTable1.setModel(myTableModel);
-            //kiviat1.setModel(myTableModel);
+            //kiviat1.addLine(axeName, 55, axeValue, axeMin, axeMax, rows.size()-1);
             //msgErreur.setText(msgErreurToSend);
             System.out.println("Axe ajouté");
             this.validate();
@@ -270,7 +265,7 @@ public class FenetreTest extends javax.swing.JFrame {
         if (verifyAxis(lign, SUPP)) {
             //Normalement pas besoin de faire cette verification
             if (indexSupp != -1) {
-                rows.remove(indexSupp);
+                //rows.remove(indexSupp);
                 myTableModel.removeRow(indexSupp);
             }
             jTable1.setModel(myTableModel);

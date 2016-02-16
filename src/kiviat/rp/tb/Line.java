@@ -18,11 +18,15 @@ public class Line {
 
     private ArrayList<ChangeListener> listerList;
     private String name;
-    private double value;
-    private double min;
-    private double max;
+    private Integer value;
+    private Integer min;
+    private Integer max;
     private int nbColumn;
     private Vector vector;
+
+    
+    
+    
 
     public Vector getVector() {
         return vector;
@@ -43,7 +47,7 @@ public class Line {
     }    
 
     //Nécessaire pour l'ajout
-    public Line(String name, double v, double vmin, double vmax) {
+    public Line(String name, Integer v, Integer vmin, Integer vmax) {
         this.name = name;
         this.value = v;
         this.min = vmin;
@@ -76,7 +80,7 @@ public class Line {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(Integer value) {
         this.value = value;
     }
 
@@ -84,7 +88,7 @@ public class Line {
         return min;
     }
 
-    public void setMin(double min) {
+    public void setMin(Integer min) {
         this.min = min;
     }
 
@@ -92,7 +96,7 @@ public class Line {
         return max;
     }
 
-    public void setMax(double max) {
+    public void setMax(Integer max) {
         this.max = max;
     }
 

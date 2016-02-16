@@ -48,9 +48,10 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
 
     private String name;
     private double angle;
-    private double value;
-    private double min;
-    private double max;
+    private Integer value;
+    private Integer min;
+    private Integer max;
+    private Integer id;
     
     public ItemKiviat() {
 //        line = new Line2D.Float(centre.x, centre.y, xAngle, yAngle);
@@ -58,7 +59,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
 
     }
     
-    public ItemKiviat(String name, double angle, double value, double min, double max, DefaultTableModel m) {
+    public ItemKiviat(String name, double angle, Integer value, Integer min, Integer max, DefaultTableModel m, Integer id) {
         super(); 
            
         this.addMouseListener(this);
@@ -67,6 +68,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         cursor = new Ellipse2D.Double();
         line = new Line2D.Double();
         
+        this.id = id;
         this.name = name;
         this.angle = angle;
         this.value = value;
@@ -81,8 +83,18 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         this.majCoordCursor();
          
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
     
-    public void setValue(double value) {
+    
+    
+    public void setValue(Integer value) {
         this.value = value;
     }
 
@@ -111,6 +123,8 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         g.setColor(Color.red);
         g.fill(cursor);
         
+        g.drawString(name,(float) pf.x+10, (float) pf.y+10);
+        
         
     }
 
@@ -132,7 +146,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         return new Point2D.Double(x,y);
     }
     
-    private double getInterval(){
+    private Integer getInterval(){
         return max-min;
     }
     
@@ -161,10 +175,10 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     }
     
     //Passe de l'échelle de la valeur[min-max] à l'échelle de la vue[0-linelength]
-    private double miseEchelle(double val){
-        double interval = max - min;
+    private double miseEchelle(Integer val){
+        Integer interval = getInterval();
         double pas = 0.0;
-        if (interval != 0.0) {
+        if (interval != 0) {
             pas = lineLength / interval;
         }
         double res = pas * (val-min);
@@ -216,9 +230,9 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        double newValue = arrondi();
+        Integer newValue = arrondi();
         coordCursor = valuetoCoordCursor(miseEchelle(newValue));
-        m.setValueAt(Double.toString(newValue), 0, 1);
+        m.setValueAt(newValue, id, 1);
         repaint();
     }
 
@@ -248,12 +262,9 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     
     
     //renvoie la nouvelle valeur dans l'echelle [min-max]
-    private double arrondi(){
+    private Integer arrondi(){
         double pas = lineLength/getInterval();
-        double newValue = valueOnDrag/pas;
-        System.out.println("Valeur avant arrondie : " + newValue);
-        newValue = Math.round(newValue) + min;
-        System.out.println("Valeur après arrondie : " + newValue);
+        Integer newValue = Math.round((float) (valueOnDrag/pas)) + min;
         return newValue;
     }
     
