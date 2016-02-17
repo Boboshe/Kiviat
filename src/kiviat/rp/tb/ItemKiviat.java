@@ -17,6 +17,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -52,6 +54,8 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     private Integer min;
     private Integer max;
     private Integer id;
+    
+    
     
     public ItemKiviat() {
 
@@ -276,13 +280,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         return newValue;
     }
     
-    //affiche les graduation d'une ligne
-    private void grad(Graphics2D g){
-        double v;
-        for(int i = (int) min; i <= (int) max; i++){
-            g.fill(new Ellipse2D.Double(centreCursor(valuetoCoordCursor(miseEchelle(i))).x, centreCursor(valuetoCoordCursor(miseEchelle(i))).y, cursorSize-5, cursorSize-5));
-        }
-    }
+    
 
     
 }

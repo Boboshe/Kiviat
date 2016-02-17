@@ -26,7 +26,6 @@ public class FenetreTest extends javax.swing.JFrame {
     Vector v2 = new Vector();
     Vector v3 = new Vector();
     
-
     private String axeName;
     private Integer axeValue;
     private Integer axeMin;
@@ -233,6 +232,7 @@ public class FenetreTest extends javax.swing.JFrame {
     /* --- Boutons ---*/
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
 
+
         String axeName = axeNameField.getText();
         String axeValue = axeValueField.getText();
         String axeMin = axeMinField.getText();
@@ -247,6 +247,7 @@ public class FenetreTest extends javax.swing.JFrame {
         myTableModel.addRow(v);
         this.validate();
 
+
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void suppBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppBtnActionPerformed
@@ -255,11 +256,13 @@ public class FenetreTest extends javax.swing.JFrame {
         
         //On récupère le nom de la ligne que l'on veut supprimer
         axeName = axeNameField.getText();
+
         
         
         for(int i = 0; i< myTableModel.getRowCount(); i++){
             if(myTableModel.getValueAt(i, 0).equals(axeName)){
                 indexSupp = i;
+
             }
         }
         if(indexSupp != -1){
