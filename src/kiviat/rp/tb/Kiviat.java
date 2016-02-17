@@ -14,11 +14,15 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+
+import kiviat.rp.tb.KiviattException;
 
 /**
  *
@@ -29,6 +33,7 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
 
     private int size = 400;
     private DefaultTableModel model;
+    private int nbAxes;
 
     /**
      * Creates new form Kiviat
@@ -40,23 +45,46 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
         this.setBorder(BorderFactory.createLineBorder(Color.black));
     }
 
-    public void setModel(DefaultTableModel model) {
-        System.out.println("SET MODEL");
-        this.model = model;
+    public void setModel(DefaultTableModel model) throws KiviattException {
+        
+        //On vide la liste des itemKiviat
         listItem.clear();
-        int nbAxes;
+        
+       
+        
+        this.model = model;
+        
         nbAxes = this.model.getRowCount();
-        System.out.println("Nb axes : " + nbAxes);
+        
+        verifyModel();
+        
+        
         double angle = 360.0 / (double) nbAxes;
+        
         for (int i = 0; i < nbAxes; i++) {
-            String name = (String) this.model.getValueAt(i, 0);
-            Integer value =  (Integer) this.model.getValueAt(i, 1);
-            Integer min = (Integer) this.model.getValueAt(i, 2);
-            Integer max = (Integer) this.model.getValueAt(i, 3);
+            String name = getModelName(i);
+            Integer value =  getModelValue(i);
+            Integer min = getModelMin(i);
+            Integer max = getModelMax(i);
+            
             addLine(name, 0.0 + (angle * i), value, min, max, i);       
         }
+        
         repaint();
+        
+        
+        
     }
+
+    public int getNbAxes() {
+        return nbAxes;
+    }
+
+    public void setNbAxes(int nbAxes) {
+        this.nbAxes = nbAxes;
+    }
+    
+    
 
     @Override
     public Dimension getPreferredSize() {
@@ -80,14 +108,14 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
     
     
 
-    //Crée un nouvel objet kiviat et l'ajoute à la liste
+    //Crée un nouvel objet Itemkiviat et l'ajoute à la liste
     public void addLine(String name, double angle, Integer value, Integer min, Integer max, Integer id) {
         ItemKiviat item = new ItemKiviat(name, angle, value, min, max, model, id);
         listItem.add(item);
         this.add(item);
     }
     
-    //Crée un nouvel objet kiviat et l'ajoute à la liste
+    //Supprime un objet ItemKiviat
     public void removeLine(int index) {
         listItem.remove(index);
         this.remove(index);
@@ -126,44 +154,55 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
     // End of variables declaration//GEN-END:variables
     @Override
     public void tableChanged(TableModelEvent e) {
-        if (e.getType() == TableModelEvent.UPDATE) {
-            //Numéro de la ligne qui a été modifé
-            int numRow = e.getFirstRow();
+        
+        
+        
+        
+     if (e.getType() == TableModelEvent.UPDATE) {
+         
+         
+         
+         //Numéro de la ligne et de la colonne qui a été modifé
+         int numRow = e.getFirstRow();
+         int numCol = e.getColumn();
+         
+         //Si le numéro de colonne est sup à 1 c'est un champ qu'on a pas le droit de modifier
+         if(numCol > 1){
+             try {
+                 throw new KiviattException("Vous ne pouvez pas modifiez ces champs");
+             } catch (KiviattException ex) {
+                 Logger.getLogger(Kiviat.class.getName()).log(Level.SEVERE, null, ex);
+             }
+         }
+         //Sinon c'est bon
+         else{
+             String name = getModelName(numRow);
+             Integer value = getModelValue(numRow);
+             
+             listItem.get(numRow).setName(name);
+             listItem.get(numRow).setValue(value);
+             
+             listItem.get(numRow).majCoordCursor();
+             listItem.get(numRow).repaint();
+         }
+     }
+         
+         
             
-            //Nouvelle valeur
-            //Si la valeur est string :
-            try{
-                Integer newValue = Integer.parseInt((String) model.getValueAt(numRow, e.getColumn()));
-                listItem.get(numRow).setValue(newValue);
-            
-                for(ItemKiviat item : listItem){
-                    item.majCoordCursor();
-                }
-            }catch(java.lang.Exception exception){
-                Integer newValue = (Integer) model.getValueAt(numRow, e.getColumn());
-                listItem.get(numRow).setValue(newValue);
-            
-                for(ItemKiviat item : listItem){
-                    item.majCoordCursor();
-                }
-            }
-            
-            
-                      
-            
-            
+     
 
-        } else if (e.getType() == TableModelEvent.INSERT) {
+         else if (e.getType() == TableModelEvent.INSERT) {
+             
             //Numéro de la ligne qui a été modifé
             int numRow = e.getFirstRow();
             if(model != null){
-                int nbAxes = model.getRowCount();
+                nbAxes = model.getRowCount();
                 double angle = 360.0 / (double) nbAxes;
             
-                String name = (String) model.getValueAt(numRow, 0); 
-                Integer value = (Integer) model.getValueAt(numRow, 1);
-                Integer min = (Integer) model.getValueAt(numRow, 2);
-                Integer max = (Integer) model.getValueAt(numRow, 3);
+                String name = getModelName(numRow);
+                Integer value = getModelValue(numRow);
+                Integer min = getModelMin(numRow);
+                Integer max = getModelMax(numRow);
        
                 addLine(name, 0.0 + (angle * nbAxes), value, min, max,nbAxes-1);
                 
@@ -178,10 +217,8 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
             //Numéro de la ligne qui a été modifé
             int numRow = e.getFirstRow();
             if(model != null){
-       
+                nbAxes = model.getRowCount();
                 removeLine(numRow);
-                
-                int nbAxes = model.getRowCount();
                 double angle = 360.0 / (double) nbAxes;
                 
                 for(int i = 0; i< nbAxes;i++){
@@ -192,8 +229,116 @@ public class Kiviat extends javax.swing.JLayeredPane implements TableModelListen
                 }    
             
             }
-        }
+        
 
         repaint();
+        }
+        
+        
     }
+    
+    private String getModelName(int numRow){
+        String newName;
+        try{
+                 newName = (String) model.getValueAt(numRow, 0);
+        }
+        catch(java.lang.Exception exception){
+                 throw new KiviattIllegalArgumentException("Veuillez entrez un noms valide");
+        }
+        return newName;
+    }
+    private Integer getModelValue(int numRow){
+        Integer newValue;
+             if (model.getValueAt(numRow, 1) instanceof String) {
+                 try{
+                    newValue = Integer.parseInt((String) model.getValueAt(numRow, 1));
+                 }
+                 catch(java.lang.NumberFormatException exception){
+                     throw new KiviattIllegalArgumentException("Veuillez entrez un nombre valide");
+                 }
+             } 
+             else if (model.getValueAt(numRow, 1) instanceof Integer) {
+                 newValue = (Integer) model.getValueAt(numRow, 1);
+             } 
+             else {
+                   throw new KiviattIllegalArgumentException("Veuillez entrez un nombre valide");
+             }
+             return newValue;
+    }
+    private Integer getModelMin(int numRow){
+        Integer newMin;
+             if (model.getValueAt(numRow, 2) instanceof String) {
+                 try{
+                    newMin = Integer.parseInt((String) model.getValueAt(numRow, 2));
+                 }
+                 catch(java.lang.NumberFormatException exception){
+                     throw new KiviattIllegalArgumentException("Veuillez entrez un nombre valide");
+                 }
+             } 
+             else if (model.getValueAt(numRow, 2) instanceof Integer) {
+                 newMin = (Integer) model.getValueAt(numRow, 2);
+             } 
+             else {
+                   throw new KiviattIllegalArgumentException("Veuillez entrez un nombre valide");
+             }
+             return newMin;
+    }
+    private Integer getModelMax(int numRow){
+        Integer newMax;
+             if (model.getValueAt(numRow, 3) instanceof String) {
+                 try{
+                    newMax = Integer.parseInt((String) model.getValueAt(numRow, 3));
+                 }
+                 catch(java.lang.NumberFormatException exception){
+                     throw new KiviattIllegalArgumentException("Veuillez entrez un nombre valide");
+                 }
+             } 
+             else if (model.getValueAt(numRow, 3) instanceof Integer) {
+                 newMax = (Integer) model.getValueAt(numRow, 3);
+             } 
+             else {
+                   throw new KiviattIllegalArgumentException("Veuillez entrez un nombre valide");
+             }
+             return newMax;
+    }
+    
+    private void verifyModel() throws KiviattException{
+        boolean res = true;
+        for(int i = 0; i< nbAxes;i++){
+           verifyAxis(i);    
+        }
+    }
+        
+   
+    private void verifyAxis(int numRow) throws KiviattException{
+        Integer value;
+        Integer min;
+        Integer max;
+        String name;
+        
+        name = getModelName(numRow);
+        min = getModelMin(numRow);
+        max = getModelMax(numRow);
+        value = getModelValue(numRow);
+        
+        System.out.println("min : " + min);
+        System.out.println("max : " + max);
+        
+        
+        
+        //On verifie le type des données
+        
+        
+            //On verifie que le min et le max et la value soit dans le bon ordre
+            if(min > max){
+                System.out.println("SSSSSSSSSSSSSSSSs");
+                throw new KiviattException("min est sup à max");
+            }
+            if(value < min || value > max){
+                throw new KiviattException("value n'est pas entre min et max");
+            }
+    }
+    
+    
+    
 }

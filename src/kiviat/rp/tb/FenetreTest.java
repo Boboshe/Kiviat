@@ -6,8 +6,9 @@
 package kiviat.rp.tb;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,13 +20,11 @@ public class FenetreTest extends javax.swing.JFrame {
     private DefaultTableModel myTableModel;
     private Vector columnName = new Vector();
     
-    //Ligne entrée en dur
-    private Line l1 = new Line("axe1", 1, 0 ,10);
-    private Line l2 = new Line("axe2", 1, 0 ,10);
-    private Line l3 = new Line("axe3", 1, 0 ,10);
     
-    ArrayList<Line> rows = new ArrayList<Line>();
     
+    Vector v1 = new Vector();
+    Vector v2 = new Vector();
+    Vector v3 = new Vector();
     
 
     private String axeName;
@@ -50,7 +49,7 @@ public class FenetreTest extends javax.swing.JFrame {
     /**
      * Creates new form NewJFrame
      */
-    public FenetreTest() {
+    public FenetreTest() throws KiviattException {
         initComponents();
         setTitle("Fenetre Test Kiviat");
         msgErreur.setForeground(Color.red);
@@ -63,21 +62,35 @@ public class FenetreTest extends javax.swing.JFrame {
         myTableModel = new DefaultTableModel(columnName, 0);
         myTableModel.addTableModelListener(kiviat1);
         
-        rows.add(l1);
-        rows.add(l2);
-        rows.add(l3);
+        v1.add("axe1");
+        v1.add(5);
+        v1.add(0);
+        v1.add(10);
+        
+        v2.add("axe2");
+        v2.add(5);
+        v2.add(0);
+        v2.add(10);
+        
+        v3.add("axe3");
+        v3.add(5);
+        v3.add(0);
+        v3.add(10);
+        
+        
 
         
         //On ajoute les vecteurs à la table
-        myTableModel.addRow(l1.getVector());
-        myTableModel.addRow(l2.getVector());
-        myTableModel.addRow(l3.getVector());
+        myTableModel.addRow(v1);
+        myTableModel.addRow(v2);
+        myTableModel.addRow(v3);
         
 
         
         jTable1.setModel(myTableModel);
         kiviat1.setModel(myTableModel);
 
+        
     }
 
     /**
@@ -220,60 +233,37 @@ public class FenetreTest extends javax.swing.JFrame {
     /* --- Boutons ---*/
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
 
-        //On récupère les informations des JTextField
-        axeName = axeNameField.getText();
-        axeValue = Integer.parseInt(axeValueField.getText());
-        axeMin = Integer.parseInt(axeMinField.getText());
-        axeMax = Integer.parseInt(axeMaxField.getText());
-
-        //On créer une ligne
-        Line lign = new Line(axeName, axeValue, axeMin, axeMax);
-
-        //On réinitialise le JLabel chargé de l'affichage du message d'erreur
-        msgErreur.setText("");
-
-        //Si la ligne est ok => on l'ajoute
-        if (verifyAxis(lign, ADD)) {
-            rows.add(lign);
-            myTableModel.addRow(lign.getVector());
-            jTable1.setModel(myTableModel);
-            //kiviat1.addLine(axeName, 55, axeValue, axeMin, axeMax, rows.size()-1);
-            //msgErreur.setText(msgErreurToSend);
-            System.out.println("Axe ajouté");
-            this.validate();
-        } else { //Sinon on send le message d'erreur correspondant
-            //On reinitialise le message d'erreur a envoyer
-            msgErreur.setText(msgErreurToSend);
-        }
+        String axeName = axeNameField.getText();
+        String axeValue = axeValueField.getText();
+        String axeMin = axeMinField.getText();
+        String axeMax = axeMaxField.getText();
+        
+        Vector v = new Vector();
+        v.add(axeName);
+        v.add(axeValue);
+        v.add(axeMin);
+        v.add(axeMax);
+        
+        myTableModel.addRow(v);
+        this.validate();
 
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void suppBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppBtnActionPerformed
 
+        indexSupp = -1;
+        
         //On récupère le nom de la ligne que l'on veut supprimer
         axeName = axeNameField.getText();
-
-        //On créer une ligne
-        Line lign = new Line(axeName);
-
-        //On réinitialise le JLabel chargé de l'affichage du message d'erreur
-        msgErreur.setText("");
-        //On réinitialise l'index de la row à supprimer
-        indexSupp = -1;
-
-        //Si la ligne est ok => on l'ajoute
-        if (verifyAxis(lign, SUPP)) {
-            //Normalement pas besoin de faire cette verification
-            if (indexSupp != -1) {
-                //rows.remove(indexSupp);
-                myTableModel.removeRow(indexSupp);
+        
+        
+        for(int i = 0; i< myTableModel.getRowCount(); i++){
+            if(myTableModel.getValueAt(i, 0).equals(axeName)){
+                indexSupp = i;
             }
-            jTable1.setModel(myTableModel);
-            System.out.println("Axe supprimé");
-            this.validate();
-        } else { //Sinon on send le message d'erreur correspondant
-            //On reinitialise le message d'erreur a envoyer
-            msgErreur.setText(msgErreurToSend);
+        }
+        if(indexSupp != -1){
+            myTableModel.removeRow(indexSupp);
         }
 
     }//GEN-LAST:event_suppBtnActionPerformed
@@ -309,7 +299,11 @@ public class FenetreTest extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FenetreTest().setVisible(true);
+                try {
+                    new FenetreTest().setVisible(true);
+                } catch (KiviattException ex) {
+                    Logger.getLogger(FenetreTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -328,125 +322,6 @@ public class FenetreTest extends javax.swing.JFrame {
     private javax.swing.JButton suppBtn;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * Fonction permettant de vérifier si l'axe est bien constituée pour l'une des commande suivantes:
-     * - cmd = ADD : pour l'ajout d'un axe.
-     * - cmd = SUPP : pour la suppression d'un axe.
-     * @param lign
-     * @param cmd
-     * @return 
-     */
-    private boolean verifyAxis(Line lign, int cmd) {
-        initMsgErreur();
-//        System.out.println("[Lign] axeName: " + lign.getName() + ", axeValue: " + lign.getValue() + ", axeMin: " + lign.getMin() + ", axeMax: " + lign.getMax());
-
-        boolean verif = true;
-
-        if (cmd == ADD) {
-            verif = verifAddAxis(lign, true);
-        } else if (cmd == SUPP) {
-            verif = verifSuppAxis(lign, false);
-        }
-
-        terminateMsg();
-
-        //Cas par défaut = true
-        //Sinon une des conditions n'est pas respectées = false
-        return verif;
-    }
-
-    private boolean verifAddAxis(Line lign, boolean verif) {
-        //Les vérifications s'effectuent par l'inverse
-        //On initialise verif à true, et si on trouve une erreur on le passe à false
-//        verif = true;
-
-        //Vérifie que min < Max.
-        //Si ce n'est pas le cas, min > Max, donc on passe verif à false
-        if (lign.getMin() > lign.getMax()) {
-            verif = false;
-//            codeErrVerif = errMinMax;
-            constituerMsgErreur(ERROR_MIN_MAX);
-        }
-
-        if (lign.getValue() < lign.getMin() || lign.getValue() > lign.getMax()) //Vérifie que la valeur est comprise entre min et Max.
-        //Si ce n'est pas le cas, (lign.getName() < lign.getMin()) [OU] (lign.getName() > lign.getMax()),
-        //alors on passe verif à false
-        {
-//            System.out.println("lign value:" + lign.getValue());
-//            System.out.println("lign min:" + lign.getMin());
-//            System.out.println("lign max:" + lign.getMax());
-            verif = false;
-//            codeErrVerif = errValue;
-            constituerMsgErreur(ERROR_VALUE);
-        }
-
-        //Vérifie que le nom saisie, n'existe pas déjà.
-        //Si ce n'est pas le cas, lign.getName() = item.getName() = un nom existe déjà,
-        //alors on passe verif à false
-        for (Line item : rows) {
-            if (item.getName().equals(lign.getName())) {
-                verif = false;
-//                codeErrVerif = errNameExisting;
-                constituerMsgErreur(ERROR_NAME_EXISTING);
-            }
-        }
-
-        return verif;
-    }
-
-    private boolean verifSuppAxis(Line lign, boolean verif) {
-        //Verif est à false au départ.
-//        verif = false;
-
-        //Vérifie que le nom saisie, existe bien dans la liste
-        int i = -1;
-        for (Line item : rows) {
-            i++;
-//            System.out.println("i=" + i);
-            if (item.getName().equals(lign.getName())) {
-                verif = true;
-                indexSupp = i;
-//                System.out.println("indexSupp=" + indexSupp);
-            }
-        }
-
-        //Si on ne trouve pas le nom, on constitue le message d'erreur correpsondant
-        if (!verif) {
-            constituerMsgErreur(ERROR_NAME_NOT_EXISTING);
-        }
-
-        return verif;
-    }
-
-    private void initMsgErreur() {
-        //reinstancie le message d'erreur à afficher
-        msgErreurToSend = "<html> *[ERREUR] ";
-    }
-
-    private void constituerMsgErreur(int codeErrVerif) {
-
-        switch (codeErrVerif) {
-            //Ajouter
-            case ERROR_MIN_MAX:
-                msgErreurToSend += "<br>La valeur du min doit être inférieure à celle du max.";
-                break;
-            case ERROR_NAME_EXISTING:
-                msgErreurToSend += "<br>Le nom saisie existe déjà.";
-                break;
-            case ERROR_VALUE:
-                msgErreurToSend += "<br>La valeur doit être comprise entre min et max.";
-                break;
-            //Supprimer
-            case ERROR_NAME_NOT_EXISTING:
-                msgErreurToSend += "<br>Le nom de l'axe à supprimer n'existe pas.";
-                msgErreurToSend += "<br>Seul le nom de l'axe suffit pour le supprimer.";
-                break;
-        }
-        System.out.println("" + msgErreurToSend);
-    }
-
-    private void terminateMsg() {
-        msgErreurToSend += "</html>";
-    }
+    
 
 }

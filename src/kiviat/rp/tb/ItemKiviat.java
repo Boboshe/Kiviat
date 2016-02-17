@@ -44,7 +44,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     private double valueOnDrag;
     
 
-    private DefaultTableModel m;
+    private DefaultTableModel model;
 
     private String name;
     private double angle;
@@ -54,8 +54,6 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     private Integer id;
     
     public ItemKiviat() {
-//        line = new Line2D.Float(centre.x, centre.y, xAngle, yAngle);
-//        cursor = new Ellipse2D.Float(x, y, cursorSize, cursorSize);
 
     }
     
@@ -75,7 +73,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         this.min = min;
         this.max = max;
         
-        this.m = m;
+        this.model = m;
         
         //Point de début et fin de la ligne
         pi = debutLine();
@@ -97,6 +95,12 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     public void setValue(Integer value) {
         this.value = value;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    
 
     public Point2D.Double getCoordCursor() {
         return coordCursor;
@@ -129,7 +133,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     }
 
     
-    
+    //Retourne les coordonnées du début de l'axe
     private Point2D.Double debutLine(){
         double x = Math.cos(Math.toRadians(angle)) * decalage;
         double y = -Math.sin(Math.toRadians(angle)) * decalage;
@@ -138,6 +142,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         return new Point2D.Double(x,y);        
     }
     
+    //Retourne les coordonnées de fin de l'axe
     private Point2D.Double finLine(){
         double x = Math.cos(Math.toRadians(angle)) * (lineLength+decalage);
         double y = -Math.sin(Math.toRadians(angle)) * (lineLength+decalage);
@@ -145,6 +150,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
         y += centreY;
         return new Point2D.Double(x,y);
     }
+    
     
     private Integer getInterval(){
         return max-min;
@@ -166,6 +172,8 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     public void majVueLine(){
         line.setLine(pi, pf);
     }
+    
+    
     
     public void majVueAxe(double angle){
         this.angle = angle;
@@ -232,7 +240,7 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     public void mouseReleased(MouseEvent e) {
         Integer newValue = arrondi();
         coordCursor = valuetoCoordCursor(miseEchelle(newValue));
-        m.setValueAt(newValue, id, 1);
+        model.setValueAt(newValue, id, 1);
         repaint();
     }
 
