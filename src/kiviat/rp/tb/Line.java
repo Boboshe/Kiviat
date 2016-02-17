@@ -24,10 +24,6 @@ public class Line {
     private int nbColumn;
     private Vector vector;
 
-    
-    
-    
-
     public Vector getVector() {
         return vector;
     }

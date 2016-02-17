@@ -27,7 +27,6 @@ public class FenetreTest extends javax.swing.JFrame {
     ArrayList<Line> rows = new ArrayList<Line>();
     
     
-
     private String axeName;
     private Integer axeValue;
     private Integer axeMin;
@@ -238,7 +237,6 @@ public class FenetreTest extends javax.swing.JFrame {
             myTableModel.addRow(lign.getVector());
             jTable1.setModel(myTableModel);
             //kiviat1.addLine(axeName, 55, axeValue, axeMin, axeMax, rows.size()-1);
-            //msgErreur.setText(msgErreurToSend);
             System.out.println("Axe ajouté");
             this.validate();
         } else { //Sinon on send le message d'erreur correspondant
@@ -265,7 +263,7 @@ public class FenetreTest extends javax.swing.JFrame {
         if (verifyAxis(lign, SUPP)) {
             //Normalement pas besoin de faire cette verification
             if (indexSupp != -1) {
-                //rows.remove(indexSupp);
+                rows.remove(indexSupp);
                 myTableModel.removeRow(indexSupp);
             }
             jTable1.setModel(myTableModel);

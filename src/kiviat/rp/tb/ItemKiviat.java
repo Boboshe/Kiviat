@@ -17,6 +17,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import javax.swing.JComponent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -52,6 +54,16 @@ public class ItemKiviat extends JComponent implements MouseListener, MouseMotion
     private Integer min;
     private Integer max;
     private Integer id;
+    
+    private PropertyChangeSupport support;
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        accessibleContext.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        accessibleContext.removePropertyChangeListener(listener);
+    }
     
     public ItemKiviat() {
 //        line = new Line2D.Float(centre.x, centre.y, xAngle, yAngle);
